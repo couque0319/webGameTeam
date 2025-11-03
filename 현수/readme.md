@@ -33,7 +33,7 @@ function playEngineShutdown()
 if (docking.active)
 if (Phaser.Input.Keyboard.JustDown(this.bKey))
 if (sway.active)
-if (battleOn && time > lastFired + 200) <- 기존 무장 발사코드 수정함
+if (battleOn && time > lastFired + 200) @<- 기존 무장 발사코드 수정함@
 function updateCarrierDocking(scene, deltaMs) 
 
 ----------------수정부분3-------------------
