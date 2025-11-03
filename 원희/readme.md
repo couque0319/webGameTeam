@@ -420,7 +420,93 @@ document.addEventListener('click', handleInteraction);
 
 
 
+``` 
+// script.js
 
+const splashScreen = document.querySelector('.splash-screen');
+const audio = document.getElementById('intro-music');
+let isTransitioning = false;
+let isUnmuted = false;
+
+// 초기 볼륨 설정
+audio.volume = 0.7; // 70% 볼륨으로 시작
+
+// 오디오 파일 로드 확인
+audio.addEventListener('loadeddata', () => {
+    console.log('오디오 파일 로드 완료');
+});
+
+audio.addEventListener('error', (e) => {
+    console.error('오디오 로드 실패:', e);
+    console.error('파일 경로를 확인하세요: intro_music.mp3');
+});
+
+// 자동재생 시도 (음소거 상태로)
+audio.play().catch(e => {
+    console.log("자동재생 대기 중 (사용자 상호작용 필요):", e.message);
+});
+
+// --- 메인으로 이동하는 함수 ---
+function goToMain() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    console.log('goToMain 실행: 화면 및 음악 페이드 아웃');
+
+    // 1. 화면 페이드 아웃
+    splashScreen.style.opacity = '0';
+    splashScreen.style.transition = 'opacity 1s ease-out';
+
+    // 2. 음악 페이드 아웃 (1초)
+    let currentVolume = audio.volume;
+    const fadeOutInterval = setInterval(() => {
+        if (currentVolume > 0.05) {
+            currentVolume -= 0.05;
+            audio.volume = Math.max(0, currentVolume);
+        } else {
+            clearInterval(fadeOutInterval);
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    }, 50);
+
+    // 3. 1초 뒤 화면 숨김
+    setTimeout(() => {
+        splashScreen.style.display = 'none';
+        console.log('메인 콘텐츠 로드!');
+    }, 1000);
+}
+
+// --- 사용자 상호작용 처리 ---
+function handleInteraction() {
+    if (isTransitioning) return;
+
+    if (!isUnmuted) {
+        // 첫 번째 상호작용: 음소거 해제 및 재생
+        audio.muted = false;
+        audio.volume = 0.7; // 볼륨 재설정
+        
+        // 재생 시도
+        audio.play()
+            .then(() => {
+                console.log('음악 재생 시작!');
+                isUnmuted = true;
+            })
+            .catch(e => {
+                console.error('재생 실패:', e);
+            });
+    } else {
+        // 두 번째 상호작용: 메인으로 이동
+        goToMain();
+    }
+}
+
+// 이벤트 리스너
+document.addEventListener('keydown', handleInteraction);
+document.addEventListener('click', handleInteraction);
+
+// 터치 이벤트 추가 (모바일 지원)
+document.addEventListener('touchstart', handleInteraction); 
+```
 
 
 
