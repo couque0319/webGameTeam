@@ -252,5 +252,179 @@ document.addEventListener('click', function() {
 화면 넘어가지는 중..
 <img width="1914" height="1028" alt="image" src="https://github.com/user-attachments/assets/60556e87-981b-4da7-8f1b-3513134479fb" />
 
+-------------------------------------
+
+## 인트로 구현 ver3 (인트로 소리 나오게) - 아직 소리 테스트 못함
+
+index.html
+```
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT: MECH</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="splash-screen">
+        <div class="splash-content">
+            <h1>PROJECT: DESTROYER</h1>
+        </div>
+    </div>
+
+    <audio id="intro-music" src="intro_music.mp3" loop muted autoplay></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
+```
+
+style.css - 변경 x
+```
+/* style.css */
+
+/* 기본 여백 제거 및 전체 높이 설정 */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.splash-screen {
+    /*여기에 이미지 파일 경로를 정확히 입력하세요! */
+    background-image: url('intro_image.png');
+
+    height: 100vh; /* 화면 전체 높이 */
+
+    /* 이미지가 화면 중앙에 오도록 설정 */
+    background-position: center;
+    background-repeat: no-repeat;
+
+    /* 이미지가 비율을 유지하며 화면을 꽉 채우도록 설정 */
+    background-size: cover; 
+
+    /* 콘텐츠(텍스트)를 화면 정중앙에 배치 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.splash-content {
+    /* 텍스트 색상을 흰색으로 설정 */
+    color: white;
+}
+
+/* 깜박임 애니메이션 정의 */
+@keyframes blink {
+    0% { opacity: 1; } /* 시작: 완전히 보임 */
+    50% { opacity: 0; } /* 중간: 완전히 투명 */
+    100% { opacity: 1; } /* 끝: 다시 완전히 보임 */
+}
+
+.splash-content h1 {
+    font-size: 3.5rem; /* 제목 글자 크기 */
+    margin-bottom: 20px;
+    
+    /* 어두운 배경에서도 글자가 잘 보이도록 그림자 추가 */
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
+    
+    /* 애니메이션 적용: blink 애니메이션을 1.5초 간격으로 무한 반복 */
+    animation: blink 1.5s infinite; 
+}
+```
+
+script.js
+```
+// script.js
+
+const splashScreen = document.querySelector('.splash-screen');
+const audio = document.getElementById('intro-music');
+let isTransitioning = false; // 화면 전환 중복 실행 방지 플래그
+let isUnmuted = false;     // 음소거 해제 여부 플래그
+
+// --- 1. (참고) HTML의 'autoplay muted' 속성으로 인해
+// 페이지 로드 시 음악이 '음소거' 상태로 '자동 재생'됩니다.
+// 브라우저가 재생을 시작했는지 확인 (선택 사항)
+audio.play().catch(e => console.log("음소거 자동재생 실패:", e));
+
+
+// --- 3. 메인으로 이동하는 함수 (음악 페이드 아웃) ---
+function goToMain() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    console.log('goToMain 실행: 화면 및 음악 페이드 아웃');
+
+    // 1. 화면 페이드 아웃
+    splashScreen.style.opacity = '0';
+    splashScreen.style.transition = 'opacity 1s ease-out';
+
+    // 2. 음악 페이드 아웃 (1초)
+    let volume = audio.volume;
+    const fadeOutInterval = setInterval(() => {
+        if (volume > 0.05) {
+            volume -= 0.05;
+            audio.volume = Math.max(0, volume);
+        } else {
+            clearInterval(fadeOutInterval);
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    }, 50); // 0.05초마다 실행
+
+    // 3. 1초 뒤 화면 숨김
+    setTimeout(() => {
+        splashScreen.style.display = 'none';
+        console.log('메인 콘텐츠 로드!');
+        // (옵션) 'main.html' 페이지로 이동
+        // window.location.href = 'main.html';
+    }, 1000);
+}
+
+// --- 2. 사용자의 상호작용을 처리하는 함수 ---
+function handleInteraction() {
+    if (isTransitioning) return; // 화면 전환 중이면 무시
+
+    if (!isUnmuted) {
+        // --- 첫 번째 상호작용: 음소거 해제 ---
+        audio.muted = false; // 음소거 해제
+        isUnmuted = true;
+        console.log('첫 번째 상호작용: 음악 소리 켜짐');
+    } else {
+        // --- 두 번째 (이후) 상호작용: 메인으로 이동 ---
+        goToMain();
+    }
+}
+
+// --- 이벤트 리스너 등록 ---
+document.addEventListener('keydown', handleInteraction);
+document.addEventListener('click', handleInteraction);
+```
+
+혹시 모르니 파일 위치 
+```
+📁 WEBGAME/
+   |
+   ├── 📄 index.html
+   ├── 📄 style.css
+   ├── 📄 script.js
+   ├── 🖼️ intro_image.png
+   └── 🎵 intro_music.mp3
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
