@@ -1574,11 +1574,24 @@ body, html {
 
 <img width="1919" height="1006" alt="image" src="https://github.com/user-attachments/assets/adc40446-03d0-4aae-a1e6-210a34171f88" />
 
+------------------------------------------------
 
+## style.css 분리(너무 길어짐) 
 
+- style.css 코드가 intro.html, main.html, select_stage.html에 필요한 모든 스타일을 넣어서 너무 길어짐 
 
+  
 
+  
+- base.css: body, html 등 모든 페이지에 공통으로 쓰이는 기본 스타일
 
+- intro.css: intro.html 전용 스타일 (스플래시 화면)
+
+- main_layout.css: main.html과 select_stage.html이 공유하는 배경 (main.jpg) 스타일
+
+- main.css: main.html 전용 스타일 (설정창, 메인 메뉴 버튼)
+
+- stage.css: select_stage.html 전용 스타일 (전장 선택 버튼)
 
 
 
