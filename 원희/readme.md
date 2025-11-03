@@ -1185,3 +1185,401 @@ main.html
 
 ------------------------------------------------
 
+## 메인 화면 
+
+```
+📁 Webgame/
+    ├── 📄 intro.html
+    ├── 📄 main.html
+    ├── 📄 select_stage.html  (✨ 새로 추가)
+    └── 📁 assets/
+        ├── 📁 css/
+        │   └── 📄 style.css
+        ├── 📁 js/
+        │   ├── 📄 script.js
+        │   └── 📄 main_game.js
+        ├── 📁 images/
+        │   ├── 🖼️ intro_image.png
+        │   └── 🖼️ main.jpg
+        └── 📁 audio/
+            ├── 🎵 intro_music.mp3
+            └── 🎵 main_music.mp3
+```
+
+main.html
+```
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAIN GAME - PROJECT: MECH</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <div class="settings-cog" id="settings-open-btn">
+        ⚙️
+    </div>
+
+    <div class="main-content">
+        
+        <div class="main-menu-buttons">
+            <a href="select_stage.html" class="menu-btn">
+                전장 선택
+            </a>
+            
+            <a href="hangar.html" class="menu-btn">
+                격납고
+            </a>
+        </div>
+        
+    </div>
+
+    <div class="settings-modal" id="settings-modal">
+        </div>
+
+    <audio id="main-music" src="assets/audio/main_music.mp3" autoplay loop></audio>
+
+    <script src="assets/js/main_game.js"></script>
+
+</body>
+</html>
+```
+
+select_stage.html 
+```
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAGE SELECT - PROJECT: MECH</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <div class="main-content">
+
+        <div class="stage-select-options">
+            <h2>전장 선택</h2>
+            
+            <a href="game_easy.html" class="stage-btn easy">
+                아침 <span>(Easy Mode)</span>
+            </a>
+            
+            <a href="game_hard.html" class="stage-btn hard">
+                밤 <span>(Hard Mode)</span>
+            </a>
+            
+            <a href="main.html" class="back-btn">
+                &laquo; 뒤로가기
+            </a>
+        </div>
+
+    </div>
+    
+</body>
+</html>
+```
+
+style.css
+```
+/* style.css */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.splash-screen {
+    background-image: url('../images/intro_image.png');
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.splash-content {
+    color: white;
+}
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+.splash-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
+    
+}
+
+.splash-content p {
+    font-size: 1.75rem; 
+    margin-top: 20px; 
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    
+    animation: blink 1.5s infinite;
+}
+
+.main-content {
+    /* 메인 콘텐츠를 중앙에 배치 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 화면 전체 높이 */
+    text-align: center;
+
+    /* ▼▼▼ 배경 이미지 추가 ▼▼▼ */
+    /* style.css는 assets/css/ 안에 있으므로, ../images/로 이동 */
+    background-image: url('../images/main.jpg');
+    background-position: center;      /* 이미지 중앙 정렬 */
+    background-repeat: no-repeat;   /* 이미지 반복 안 함 */
+    background-size: cover;         /* 화면에 꽉 차게 */
+
+
+    /* ▼▼▼ 배경 이미지가 밝아도 글씨가 잘 보이도록 수정 ▼▼▼ */
+    color: white; /* 글자색을 흰색으로 */
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8); /* 그림자 추가 */
+}
+
+.main-content h1 {
+    /* 스플래시 h1의 애니메이션/그림자 효과를 제거 */
+    font-size: 2.5rem;
+    text-shadow: none; /* .main-content의 text-shadow를 사용 */
+    animation: none; 
+}
+
+/* 톱니바퀴 아이콘 */
+.settings-cog {
+    position: absolute; /* .main-content와 겹치도록 */
+    top: 20px;
+    right: 20px;
+    font-size: 2.5rem; /* 아이콘 크기 */
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    cursor: pointer; /* 클릭 가능 표시 */
+    z-index: 100; /* 다른 요소보다 위에 표시 */
+    transition: transform 0.3s ease;
+}
+
+.settings-cog:hover {
+    transform: rotate(90deg); /* 마우스 올리면 회전 */
+}
+
+/* 설정 모달 배경 (화면 전체 덮기) */
+.settings-modal {
+    display: none; /* ▼▼▼ 평소에는 숨김 ▼▼▼ */
+    position: fixed; /* 화면에 고정 */
+    z-index: 1000; /* 가장 위에 표시 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 반투명 검은색 배경 */
+
+    /* 자식 요소를 중앙 정렬 (flex 사용) */
+    justify-content: center;
+    align-items: center;
+}
+
+/* ▼▼▼ JS로 이 클래스를 추가하면 모달이 보임 ▼▼▼ */
+.settings-modal.show {
+    display: flex; 
+}
+
+/* 설정창 흰색 박스 */
+.settings-content {
+    background-color: #fefefe;
+    color: #333;
+    margin: auto;
+    padding: 20px 30px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px; /* 최대 넓이 */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+/* 닫기 버튼 (X) */
+.close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+.settings-content h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+/* 각 설정 그룹 (소리, 조작) */
+.setting-group {
+    margin-bottom: 25px;
+}
+
+.setting-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* 볼륨 슬라이더 */
+#volume-slider {
+    width: 100%;
+    cursor: pointer;
+}
+
+/* 조작 방식 버튼 그룹 */
+.control-buttons {
+    display: flex;
+    justify-content: space-between; /* 버튼들을 균등하게 배치 */
+}
+
+.control-btn {
+    padding: 10px 15px;
+    border: 2px solid #ccc;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    flex-grow: 1; /* 버튼들이 공간을 나눠 가짐 */
+    margin: 0 5px;
+}
+
+/* 선택된 버튼 스타일 */
+.control-btn.active {
+    background-color: #007bff; /* 파란색 */
+    color: white;
+    border-color: #007bff;
+}
+
+.main-menu-buttons {
+    display: flex;
+    flex-direction: column; /* 버튼을 세로로 나열 */
+    gap: 20px; /* 버튼 사이 간격 */
+    width: 300px; /* 버튼 너비 고정 */
+}
+
+.menu-btn {
+    display: block;
+    padding: 25px 20px;
+    font-size: 2rem; /* 글씨 크기 */
+    font-weight: bold;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.6); /* 반투명 검은 배경 */
+    border: 3px solid white;
+    border-radius: 10px;
+    text-decoration: none; /* 밑줄 제거 */
+    text-align: center;
+    transition: all 0.3s ease;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.menu-btn:hover {
+    background-color: rgba(255, 255, 255, 0.9); /* 흰색 배경 */
+    color: #333; /* 어두운 글씨 */
+    border-color: #333;
+    transform: scale(1.05); /* 살짝 커짐 */
+}
+
+.stage-select-options {
+    width: 90%;
+    max-width: 500px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.7); /* 반투명 검은 배경 */
+    border-radius: 10px;
+    border: 2px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 요소 사이 간격 */
+}
+
+.stage-select-options h2 {
+    font-size: 2.5rem;
+    color: white;
+    text-align: center;
+    margin: 0 0 15px 0;
+    text-shadow: 2px 2px 4px #000;
+}
+
+.stage-btn {
+    display: block;
+    padding: 20px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.stage-btn span {
+    display: block; /* 줄바꿈 */
+    font-size: 1rem;
+    font-weight: normal;
+    opacity: 0.8;
+}
+
+.stage-btn:hover {
+    transform: scale(1.03);
+}
+
+/* 이지/하드 모드 색상 구분 */
+.stage-btn.easy {
+    background-color: #4a90e2; /* 파란색 계열 */
+    border: 2px solid #8ec5fc;
+}
+.stage-btn.hard {
+    background-color: #d0021b; /* 붉은색 계열 */
+    border: 2px solid #ff788a;
+}
+
+/* 뒤로가기 버튼 */
+.back-btn {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #ddd;
+    text-decoration: none;
+    text-align: center;
+    transition: color 0.2s;
+}
+
+.back-btn:hover {
+    color: white;
+    text-decoration: underline;
+}
+```
+
+<img width="1919" height="1008" alt="image" src="https://github.com/user-attachments/assets/8bcfc76a-e181-48fc-bf4e-cff2e2673f67" />
+
+<img width="1919" height="1006" alt="image" src="https://github.com/user-attachments/assets/adc40446-03d0-4aae-a1e6-210a34171f88" />
+
+
+
+
+
+
+
+
+
+
