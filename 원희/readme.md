@@ -636,13 +636,206 @@ document.addEventListener('touchstart', handleInteraction);
 ```
 -------------------------------------------------------
 
+## intex.html 파일을 intro.html로 변경과 main.html 추가 
+
+```
+📁 Webgame/
+    ├── 📄 intro.html   (이전 index.html)
+    ├── 📄 main.html    (새로 추가)
+    └── 📁 assets/
+        ├── 📁 css/
+        │   └── 📄 style.css (main.html 스타일 추가)
+        ├── 📁 js/
+        │   └── 📄 script.js (페이지 이동 로직 수정)
+        ├── 📁 images/
+        │   └── 🖼️ intro_image.png
+        └── 📁 audio/
+            └── 🎵 intro_music.mp3
+```
+
+intro.html
+```
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT: MECH</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <div class="splash-screen">
+        <div class="splash-content">
+            <h1>PROJECT: DESTROYER</h1>
+        </div>
+    </div>
+
+    <audio id="intro-music" src="assets/audio/intro_music.mp3" loop muted autoplay></audio>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
+```
+
+main.html 
+```
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAIN GAME - PROJECT: MECH</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <div class="main-content">
+        <h1>메인 게임 화면</h1>
+        <p>게임 콘텐츠가 여기에 표시됩니다.</p>
+        
+        </div>
+
+    </body>
+</html>
+```
+
+style.css
+```
+/* style.css */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.splash-screen {
+    background-image: url('../images/intro_image.png');
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.splash-content {
+    color: white;
+}
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+.splash-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
+    animation: blink 1.5s infinite; 
+}
+
+.main-content {
+    /* main.html의 콘텐츠를 중앙에 배치 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 화면 전체 높이 */
+
+    /* 스플래시와 다른 배경/글자색 */
+    background-color: #222; /* 어두운 배경 */
+    color: #eee; /* 밝은 글씨 */
+    text-align: center;
+}
+
+.main-content h1 {
+    /* 스플래시 h1의 애니메이션/그림자 효과를 제거 */
+    font-size: 2.5rem;
+    text-shadow: none;
+    animation: none; 
+}
+```
+
+script.js
+```
+// script.js 
+
+const splashScreen = document.querySelector('.splash-screen');
+const audio = document.getElementById('intro-music');
+let isTransitioning = false;
+let isUnmuted = false;
+
+audio.volume = 0.7;
+
+audio.addEventListener('loadeddata', () => {
+    console.log('오디오 파일 로드 완료');
+});
+audio.addEventListener('error', (e) => {
+    console.error('오디오 로드 실패:', e);
+    console.error('파일 경로를 확인하세요: assets/audio/intro_music.mp3');
+});
+audio.play().catch(e => {
+    console.log("자동재생 대기 중 (사용자 상호작용 필요):", e.message);
+});
 
 
+function goToMain() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    console.log('goToMain 실행: 화면 및 음악 페이드 아웃 후 페이지 이동');
 
+    // 1. 화면 페이드 아웃
+    splashScreen.style.opacity = '0';
+    splashScreen.style.transition = 'opacity 1s ease-out';
 
+    // 2. 음악 페이드 아웃 (1초)
+    let currentVolume = audio.volume;
+    const fadeOutInterval = setInterval(() => {
+        if (currentVolume > 0.05) {
+            currentVolume -= 0.05;
+            audio.volume = Math.max(0, currentVolume);
+        } else {
+            clearInterval(fadeOutInterval);
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    }, 50);
 
+    setTimeout(() => {
+        window.location.href = 'main.html'; 
+    }, 1000); // 1초(1000ms)는 페이드 아웃 시간과 동일하게 설정
+}
 
+function handleInteraction() {
+    if (isTransitioning) return;
 
+    if (!isUnmuted) {
+        // 첫 번째 상호작용: 음소거 해제 및 재생
+        audio.muted = false;
+        audio.volume = 0.7;
+        
+        audio.play()
+            .then(() => {
+                console.log('음악 재생 시작!');
+                isUnmuted = true;
+            })
+            .catch(e => {
+                console.error('재생 실패:', e);
+            });
+    } else {
+        // 두 번째 상호작용: 메인으로 이동
+        goToMain();
+    }
+}
+
+// 이벤트 리스너 
+document.addEventListener('keydown', handleInteraction);
+document.addEventListener('click', handleInteraction);
+document.addEventListener('touchstart', handleInteraction);
+```
 
 
 
