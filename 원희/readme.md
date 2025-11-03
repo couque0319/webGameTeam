@@ -440,7 +440,7 @@ document.addEventListener('touchstart', handleInteraction);
 
 --------------------------------------------------
 
-파일 위치 바꾸기(파일이 더 추가 될 때 깔끔하게 구분하기 위해)
+## 파일 위치 바꾸기(파일이 더 추가 될 때 깔끔하게 구분하기 위해)
 
 
 ```
@@ -634,7 +634,7 @@ document.addEventListener('click', handleInteraction);
 // 터치 이벤트 추가 (모바일 지원)
 document.addEventListener('touchstart', handleInteraction);
 ```
-
+-------------------------------------------------------
 
 
 
