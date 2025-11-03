@@ -1899,3 +1899,113 @@ stage.css
 }
 
 ```
+
+intro.html 
+```
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT: MECH</title>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/intro.css">
+</head>
+<body>
+
+    <div class="splash-screen">
+        <div class="splash-content">
+            <h1>PROJECT: DESTROYER</h1>
+            <p>Touch To Start</p>
+        </div>
+    </div>
+
+    <audio id="intro-music" src="assets/audio/intro_music.mp3" loop muted autoplay></audio>
+
+    <script src="assets/js/script.js"></script>
+    
+</body>
+</html>
+```
+
+main.html 
+```
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAIN GAME - PROJECT: MECH</title>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/main_layout.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+
+    <div class="settings-cog" id="settings-open-btn">
+        ⚙️
+    </div>
+
+    <div class="main-content">
+        
+        <div class="main-menu-buttons">
+            <a href="select_stage.html" class="menu-btn">
+                전장 선택
+            </a>
+            
+            <a href="hangar.html" class="menu-btn">
+                격납고
+            </a>
+        </div>
+        
+    </div>
+
+    <div class="settings-modal" id="settings-modal">
+        </div>
+
+    <audio id="main-music" src="assets/audio/main_music.mp3" autoplay loop></audio>
+
+    <script src="assets/js/main_game.js"></script>
+
+</body>
+</html>
+```
+
+select_stage.html 
+```
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAGE SELECT - PROJECT: MECH</title>
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/main_layout.css">
+    <link rel="stylesheet" href="assets/css/stage.css">
+</head>
+<body>
+
+    <div class="main-content">
+
+        <div class="stage-select-options">
+            <h2>전장 선택</h2>
+            
+            <a href="game_easy.html" class="stage-btn easy">
+                아침 <span>(Easy Mode)</span>
+            </a>
+            
+            <a href="game_hard.html" class="stage-btn hard">
+                밤 <span>(Hard Mode)</span>
+            </a>
+            
+            <a href="main.html" class="back-btn">
+                &laquo; 뒤로가기
+            </a>
+        </div>
+
+    </div>
+    
+</body>
+</html>
+```
+
