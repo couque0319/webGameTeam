@@ -15,7 +15,7 @@ let gameOver = false; 아래
 
 라인58 ~ 라인183까지
 
-변수선언 + 수정&생성{
+변수선언 + 함수수정&생성{
 function spawnEnemy()
 function setBattle()
 function startCarrierApproach()
