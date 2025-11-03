@@ -837,5 +837,351 @@ document.addEventListener('click', handleInteraction);
 document.addEventListener('touchstart', handleInteraction);
 ```
 
+--------------------------------------------------------------------------
 
+## 인트로 화면 살짝 바꾸고 메인 화면에 설정 버튼 생성 
+
+```
+📁 Webgame/
+    ├── 📄 intro.html
+    ├── 📄 main.html
+    └── 📁 assets/
+        ├── 📁 css/
+        │   └── 📄 style.css
+        ├── 📁 js/
+        │   ├── 📄 script.js      (인트로 화면용)
+        │   └── 📄 main_game.js   (메인 화면 설정창용)
+        ├── 📁 images/
+        │   ├── 🖼️ intro_image.png
+        │   └── 🖼️ main.jpg
+        └── 📁 audio/
+            ├── 🎵 intro_music.mp3
+            └── 🎵 main_music.mp3
+```
+
+<img width="1919" height="1006" alt="image" src="https://github.com/user-attachments/assets/413e61fa-3520-42a6-8282-81981d970b26" />
+
+설정을 누르면 
+
+<img width="1919" height="1009" alt="image" src="https://github.com/user-attachments/assets/04778caf-6636-46c2-abd6-6550c7d9d473" />
+
+
+main_game.js 
+```
+// main_game.js
+
+// --- 1. HTML 요소들 가져오기 ---
+const settingsModal = document.getElementById('settings-modal');
+const openBtn = document.getElementById('settings-open-btn');
+const closeBtn = document.getElementById('settings-close-btn');
+
+const audio = document.getElementById('main-music');
+const volumeSlider = document.getElementById('volume-slider');
+
+const controlButtonContainer = document.querySelector('.control-buttons');
+const controlButtons = document.querySelectorAll('.control-btn');
+
+// --- 2. 설정창 열기/닫기 이벤트 ---
+
+// 톱니바퀴 클릭 시
+openBtn.addEventListener('click', () => {
+    settingsModal.classList.add('show'); // .show 클래스 추가해서 보이기
+});
+
+// X 버튼 클릭 시
+closeBtn.addEventListener('click', () => {
+    settingsModal.classList.remove('show'); // .show 클래스 제거해서 숨기기
+});
+
+// 모달 배경 클릭 시 (선택 사항)
+settingsModal.addEventListener('click', (event) => {
+    // 클릭된 곳이 모달 배경(자기 자신)일 때만 닫힘
+    if (event.target === settingsModal) {
+        settingsModal.classList.remove('show');
+    }
+});
+
+
+// --- 3. 소리 조절 이벤트 ---
+
+// 페이지 로드 시, 슬라이더 값을 실제 오디오 볼륨에 적용
+// (audio.volume은 0~1 사이, 슬라이더는 0~100)
+audio.volume = volumeSlider.value / 100;
+
+// 슬라이더를 '움직일 때마다'(input) 볼륨 변경
+volumeSlider.addEventListener('input', (event) => {
+    const newVolume = event.target.value / 100;
+    audio.volume = newVolume;
+});
+
+
+// --- 4. 조작 방식 선택 이벤트 ---
+
+// '조작 방식' 버튼 그룹에 이벤트 리스너 추가
+controlButtonContainer.addEventListener('click', (event) => {
+    // 클릭된 요소가 .control-btn이 아니면 무시
+    if (!event.target.classList.contains('control-btn')) {
+        return;
+    }
+
+    // 1. 모든 버튼에서 'active' 클래스 제거
+    controlButtons.forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    // 2. 지금 클릭한 버튼에만 'active' 클래스 추가
+    const clickedButton = event.target;
+    clickedButton.classList.add('active');
+
+    // 3. 어떤 키가 선택되었는지 확인 (나중에 게임 로직에서 사용)
+    const selectedControl = clickedButton.dataset.control; // (e.g., "wasd", "arrows", "mouse")
+    console.log('선택된 조작 방식:', selectedControl);
+
+    // (선택 사항) 사용자의 선택을 브라우저에 저장하기
+    // localStorage.setItem('controlScheme', selectedControl);
+});
+```
+
+style.css 
+```
+/* style.css */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.splash-screen {
+    background-image: url('../images/intro_image.png');
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.splash-content {
+    color: white;
+}
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+.splash-content h1 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    
+    text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
+    
+}
+
+.splash-content p {
+    font-size: 1.75rem; 
+    margin-top: 20px; 
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    
+    animation: blink 1.5s infinite;
+}
+
+.main-content {
+    /* 메인 콘텐츠를 중앙에 배치 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* 화면 전체 높이 */
+    text-align: center;
+
+    /* ▼▼▼ 배경 이미지 추가 ▼▼▼ */
+    /* style.css는 assets/css/ 안에 있으므로, ../images/로 이동 */
+    background-image: url('../images/main.jpg');
+    background-position: center;      /* 이미지 중앙 정렬 */
+    background-repeat: no-repeat;   /* 이미지 반복 안 함 */
+    background-size: cover;         /* 화면에 꽉 차게 */
+
+
+    /* ▼▼▼ 배경 이미지가 밝아도 글씨가 잘 보이도록 수정 ▼▼▼ */
+    color: white; /* 글자색을 흰색으로 */
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8); /* 그림자 추가 */
+}
+
+.main-content h1 {
+    /* 스플래시 h1의 애니메이션/그림자 효과를 제거 */
+    font-size: 2.5rem;
+    text-shadow: none; /* .main-content의 text-shadow를 사용 */
+    animation: none; 
+}
+
+/* 톱니바퀴 아이콘 */
+.settings-cog {
+    position: absolute; /* .main-content와 겹치도록 */
+    top: 20px;
+    right: 20px;
+    font-size: 2.5rem; /* 아이콘 크기 */
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    cursor: pointer; /* 클릭 가능 표시 */
+    z-index: 100; /* 다른 요소보다 위에 표시 */
+    transition: transform 0.3s ease;
+}
+
+.settings-cog:hover {
+    transform: rotate(90deg); /* 마우스 올리면 회전 */
+}
+
+/* 설정 모달 배경 (화면 전체 덮기) */
+.settings-modal {
+    display: none; /* ▼▼▼ 평소에는 숨김 ▼▼▼ */
+    position: fixed; /* 화면에 고정 */
+    z-index: 1000; /* 가장 위에 표시 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 반투명 검은색 배경 */
+
+    /* 자식 요소를 중앙 정렬 (flex 사용) */
+    justify-content: center;
+    align-items: center;
+}
+
+/* ▼▼▼ JS로 이 클래스를 추가하면 모달이 보임 ▼▼▼ */
+.settings-modal.show {
+    display: flex; 
+}
+
+/* 설정창 흰색 박스 */
+.settings-content {
+    background-color: #fefefe;
+    color: #333;
+    margin: auto;
+    padding: 20px 30px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px; /* 최대 넓이 */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+/* 닫기 버튼 (X) */
+.close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+.settings-content h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+/* 각 설정 그룹 (소리, 조작) */
+.setting-group {
+    margin-bottom: 25px;
+}
+
+.setting-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* 볼륨 슬라이더 */
+#volume-slider {
+    width: 100%;
+    cursor: pointer;
+}
+
+/* 조작 방식 버튼 그룹 */
+.control-buttons {
+    display: flex;
+    justify-content: space-between; /* 버튼들을 균등하게 배치 */
+}
+
+.control-btn {
+    padding: 10px 15px;
+    border: 2px solid #ccc;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    flex-grow: 1; /* 버튼들이 공간을 나눠 가짐 */
+    margin: 0 5px;
+}
+
+/* 선택된 버튼 스타일 */
+.control-btn.active {
+    background-color: #007bff; /* 파란색 */
+    color: white;
+    border-color: #007bff;
+}
+```
+
+main.html
+```
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAIN GAME - PROJECT: MECH</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <div class="settings-cog" id="settings-open-btn">
+        ⚙️
+    </div>
+
+    <div class="main-content">
+        <h1>메인 게임 화면</h1>
+        <p>게임 콘텐츠가 여기에 표시됩니다.</p>
+    </div>
+
+    <div class="settings-modal" id="settings-modal">
+        <div class="settings-content">
+            <span class="close-btn" id="settings-close-btn">&times;</span>
+            <h2>설정</h2>
+
+            <div class="setting-group">
+                <label for="volume-slider">배경 음악</label>
+                <input type="range" id="volume-slider" min="0" max="100" value="70">
+            </div>
+
+            <div class="setting-group">
+                <label>조작 방식</label>
+                <div class="control-buttons">
+                    <button class="control-btn active" data-control="wasd">WASD</button>
+                    <button class="control-btn" data-control="arrows">방향키</button>
+                    <button class="control-btn" data-control="mouse">마우스</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <audio id="main-music" src="assets/audio/main_music.mp3" autoplay loop></audio>
+
+    <script src="assets/js/main_game.js"></script>
+
+</body>
+</html>
+```
+
+------------------------------------------------
 
