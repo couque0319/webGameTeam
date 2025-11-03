@@ -115,7 +115,7 @@ enterButton.addEventListener('click', function() {
 
 파일 위치(이렇게 작업을 해야 파일이 안 꼬임)
 ```
-📁 my-website/  (← 원하는 이름으로 폴더를 만드세요)
+📁 Webgame/ 
    |
    ├── 📄 index.html      (HTML 파일)
    ├── 📄 style.css        (CSS 파일)
@@ -406,7 +406,7 @@ document.addEventListener('click', handleInteraction);
 
 혹시 모르니 파일 위치 
 ```
-📁 WEBGAME/
+📁 Webgame/
    |
    ├── 📄 index.html
    ├── 📄 style.css
